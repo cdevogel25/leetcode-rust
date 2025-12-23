@@ -28,7 +28,24 @@ impl Solution {
         vec.push(l.unwrap().val);
         vec
     }
+
     pub fn add_two_numbers(l1: Option<Box<ListNode>>, l2: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        let mut list1 = Self::to_vec(l1).into_iter();
+        let mut list2 = Self::to_vec(l2).into_iter();
+
+        let mut solution: Vec<i32> = vec![];
+
+        loop {
+            match (list1.next(), list2.next()) {
+                (Some(x), Some(y)) => {solution.push(x + y)}
+                (Some(x), None) => {solution.push(x)}
+                (None, Some(y)) => {solution.push(y)}
+                (None, None) => break,
+            }
+        }
+        let mut carry = 0;
+        let soln_two = vec![];
+        solution.iter.for_each(|x| if x > 9 { carry = 1; soln_two.push( *x - 10 )  } else { carry = 0 });
     }
 }
 
@@ -68,7 +85,8 @@ mod test {
         let l2 = to_list(vec![5, 6, 4]);
 
         // println!("{:?}", to_vec(l1));
-        assert_eq!(to_vec(l1), vec![2,4,3]);
+        // assert_eq!(to_vec(l1), vec![2,4,3]);
+        assert_eq!(Solution::add_two_numbers(l1, l2), vec![7,10,7]);
         
         // let result = Solution::add_two_numbers(l1, l2);
         
