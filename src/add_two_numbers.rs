@@ -17,35 +17,35 @@ impl ListNode {
 }
 
 impl Solution {
-    fn to_vec(list: Option<Box<ListNode>>) -> Vec<i32> {
-        let mut vec = vec![];
-        let mut l = list.as_ref();
-
-        while l.unwrap().next.is_some() {
-            vec.push(l.unwrap().val);
-            l = l.unwrap().next.as_ref();
-        }
-        vec.push(l.unwrap().val);
-        vec
-    }
-
     pub fn add_two_numbers(l1: Option<Box<ListNode>>, l2: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
-        let mut list1 = Self::to_vec(l1).into_iter();
-        let mut list2 = Self::to_vec(l2).into_iter();
+        // dummy head
+        let mut l3 = Some(Box::new(ListNode::new(0)));
+        let mut l3_ref = l3.as_ref();
+        let mut carry = 0;
+        let mut sum = 0;
 
-        let mut solution: Vec<i32> = vec![];
+        let mut l1_ref = l1.as_ref();
+        let mut l2_ref = l2.as_ref();
 
         loop {
-            match (list1.next(), list2.next()) {
-                (Some(x), Some(y)) => {solution.push(x + y)}
-                (Some(x), None) => {solution.push(x)}
-                (None, Some(y)) => {solution.push(y)}
-                (None, None) => break,
+            match (l1_ref.unwrap().next.is_some(), l2_ref.unwrap().next.is_some()) {
+                (true, true) => {
+                    sum = l1_ref.unwrap().val + l2_ref.unwrap().val + carry;
+                    carry = if sum > 9 { 1 } else { 0 };
+                }
+                (true, false) => {
+                    sum = l1_ref.unwrap().val + carry;
+                    carry = if sum > 9 { 1 } else { 0 };
+                }
+                (false, true) => {
+                    sum = l2_ref.unwrap().val + carry;
+                    carry = if sum > 9 { 1 } else { 0 };
+                }
+                (false, false) => break
             }
+            l3_ref.unwrap().next = Some(Box::new(ListNode::new(if sum > 9 { sum - 9 } else { sum })));
         }
-        let mut carry = 0;
-        let soln_two = vec![];
-        solution.iter.for_each(|x| if x > 9 { carry = 1; soln_two.push( *x - 10 )  } else { carry = 0 });
+        l3
     }
 }
 
