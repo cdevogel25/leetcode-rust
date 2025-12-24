@@ -2,9 +2,18 @@ pub struct Solution;
 
 impl Solution {
     pub fn is_palindrome(x: i32) -> bool {
-        let s = x.to_string();
-        let s_rev: String = s.chars().rev().collect();
+        x.to_string() == x.to_string().chars().rev().collect::<String>()
+    }
+}
 
-        s == s_rev
+#[cfg(test)]
+mod test {
+    use super::Solution;
+
+    #[test]
+    fn test_is_palindrome() {
+        assert_eq!(Solution::is_palindrome(121), true);
+        assert_eq!(Solution::is_palindrome(-121), false);
+        assert_eq!(Solution::is_palindrome(123), false);
     }
 }
