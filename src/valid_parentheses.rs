@@ -6,10 +6,13 @@ impl Solution {
 
         s.chars().for_each(|x| match x {
             '(' | '{' | '[' => { stack.push(x); }
-            ')' | '}' | ']' => { if stack.ends_with( ')' | '{' | '[' ) {
-                
+            ')' => { if stack.ends_with('(') { stack.pop(); continue; } else { return false }
+            ']' => { if stack.ends_with('[') { stack.pop(); continue; } else { return false }
+            '}' => { if stack.ends_with('{') { stack.pop(); continue; } else { return false }
+            _ => return false
             }}
         })
+        true
     }
 }
 
