@@ -1,4 +1,4 @@
-pub mod plus_one;
+pub mod add_binary;
 
 fn main() {
 }
