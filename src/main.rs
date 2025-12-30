@@ -1,4 +1,4 @@
-pub mod add_binary;
+pub mod add_two_numbers;
 
 fn main() {
 }
