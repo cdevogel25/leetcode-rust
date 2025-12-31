@@ -1,4 +1,4 @@
-pub mod my_sqrt;
+pub mod climb_stairs;
 
 fn main() {
 }
