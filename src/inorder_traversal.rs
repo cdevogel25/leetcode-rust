@@ -49,7 +49,7 @@ impl Solution {
 				current = right;
 			} else {
 				let mut predecessor = node.borrow().left.clone().unwrap();
-				
+
 				loop {
 					let right_child = predecessor.borrow().right.clone();
 					if right_child.is_none() || Rc::ptr_eq(right_child.as_ref().unwrap(), &node) {
