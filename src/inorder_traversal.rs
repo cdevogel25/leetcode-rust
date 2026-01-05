@@ -17,67 +17,10 @@ impl TreeNode {
 	}
 }
 
-pub struct Tree {
-	root: Option<Rc<RefCell<TreeNode>>>,
-}
-
-impl Tree {
-	pub fn new(root: Option<Rc<RefCell<TreeNode>>>) -> Self {
-		Tree {
-			root
-		}
-	}
-
-	pub fn iter(&self) -> InOrderIter {
-		InOrderIter::new(self.root.as_ref())
-	}
-}
-
-pub struct InOrderIter<'a> {
-	stack: Vec<&'a Rc<RefCell<TreeNode>>>
-}
-
-impl <'a> InOrderIter<'a> {
-	pub fn new(root: Option<&'a Rc<RefCell<TreeNode>>>) -> Self {
-		if let Some(node) = root {
-			InOrderIter { stack: vec![node] }
-		} else {
-			InOrderIter { stack: vec![] }
-		}
-	}
-}
-
-impl<'a> Iterator for InOrderIter<'a> {
-	type Item = &'a Rc<RefCell<TreeNode>>;
-
-	fn next(&mut self) -> Option<Self::Item> {
-		if let Some(node) = self.stack.pop() {
-			if let Some(right) = &node.borrow().right {
-				self.stack.push(&right)
-			}
-
-			if let Some(left) = &node.borrow().left {
-				self.stack.push(&left)
-			}
-
-			return Some(node)
-		}
-
-		return None
-	}
-}
-
 use std::rc::Rc;
 use std::cell::RefCell;
 pub struct Solution;
 impl Solution {
-	pub fn find_inorder_predecessor(&mut current: &mut Option<Rc<RefCell<TreeNode>>>) -> &Option<Rc<RefCell<TreeNode>>> {
-		while current.as_ref().unwrap().borrow().left.is_some() || current.unwrap().borrow().right.is_some() {
-			
-		}
-
-		&current
-	}
 	/*
 		morris traversal algorithm:
 		- for each node, check if it has a left child
@@ -91,9 +34,44 @@ impl Solution {
 		- move to the right child
 	 */
     pub fn inorder_traversal(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
-		let mut result: Vec<i32> = vec![];
-		let mut root_copy = root.clone();
-		let mut current = &root_copy;
+		let mut result: Vec<i32> = Vec::new();
+		let mut current = root;
+
+		// for each node
+		while let Some(node) = current.clone() {
+			// does it have a left child?
+			let left_exists = node.borrow().left.is_some();
+
+			//if not, visit and move to its right child
+			if !left_exists {
+				result.push(node.borrow().val);
+				let right = node.borrow().right.clone();
+				current = right;
+			} else {
+				let mut predecessor = node.borrow().left.clone().unwrap();
+				
+				loop {
+					let right_child = predecessor.borrow().right.clone();
+					if right_child.is_none() || Rc::ptr_eq(right_child.as_ref().unwrap(), &node) {
+						break;
+					}
+
+					predecessor = right_child.unwrap();
+				}
+
+				let is_linked = predecessor.borrow().right.is_some();
+				if !is_linked {
+					predecessor.borrow_mut().right = Some(node.clone());
+					let left = node.borrow().left.clone();
+					current = left;
+				} else {
+					predecessor.borrow_mut().right = None;
+					result.push(node.borrow().val);
+					let right = node.borrow().right.clone();
+					current = right;
+				}
+			}
+		}
 
 		result
     }
