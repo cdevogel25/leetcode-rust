@@ -1,11 +1,3 @@
-pub struct Solution;
-
-impl Solution {
-    pub fn my_atoi(s: String) -> i32 {
-
-    }
-}
-
 /* 
 Implement the myAtoi(string s) function, which converts a string to a 32-bit signed integer.
 
@@ -93,3 +85,63 @@ Reading stops at the first non-digit character 'w'.
 
 
 */
+
+pub struct Solution;
+
+impl Solution {
+    pub fn my_atoi(s: String) -> i32 {
+        let mut s = s;
+        let mut l = 0;
+        let mut b = 0;
+        let mut seen = false;
+        s.retain(|c| !c.is_whitespace());
+
+        let sign: i32 = if s.chars().next() == Some('-') {
+            s = s[1..].to_string();
+            -1
+        } else {
+            1
+        };
+
+        for c in s.chars() {
+            if !c.is_numeric() {
+                break
+            } else if c == '0' {
+                b += 1
+            } else if c.is_numeric() && c != '0' && !seen {
+                seen = true;
+            }
+            l += 1;
+        }
+
+        let mut i: i32 = 1;
+        let mut r: i32 = 0;
+        s = s[b..l].to_string();
+        if l > 10 {
+            if sign > 0 {
+                return i32::MAX
+            } else {
+                return i32::MAX * sign + 1
+            }
+        }
+        if seen { s.chars().rev().for_each(|c| { r = r.checked_add((c.to_digit(10).unwrap() as i32).checked_mul(i).unwrap()).unwrap(); i =  i.checked_mul(10).unwrap(); }); }
+        (r as i32) * sign
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::Solution;
+
+    #[test]
+    fn atoi() {
+        assert_eq!(Solution::my_atoi("42".to_string()), 42);
+        assert_eq!(Solution::my_atoi("-42".to_string()), -42);
+        assert_eq!(Solution::my_atoi("1337c0d3".to_string()), 1337);
+        assert_eq!(Solution::my_atoi("0-1".to_string()), 0);
+        assert_eq!(Solution::my_atoi("words and 987".to_string()), 0);
+        assert_eq!(Solution::my_atoi("-042".to_string()), -42);
+        assert_eq!(Solution::my_atoi("   -042".to_string()), -42);
+        assert_eq!(Solution::my_atoi("-91283472332".to_string()), -2147483648)
+    }
+}
